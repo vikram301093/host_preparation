@@ -58,4 +58,32 @@
     timeout: 600
     state: started
   become: false
+  
+- name: Install Docker
+  yum:
+    name: docker-{{ docker_version }}
+    state: present
+  
+- name: Copying Docker storage setup file
+  template:
+    src: "templates/docker-storage-setup.j2"
+    dest: "/etc/sysconfig/docker-storage-setup"
+    
+- name: Configuring docker storage
+  command: docker-storage-setup
+  ignore_errors: true
+  register: docker_storage
+
+- name: Warning operator if Docker storage failed to install
+  debug:
+    msg: "WARNING: Docker storage could not be configured - Using default option, which has reduced performance!"
+  when: docker_storage.rc != 0
+
+- name: Starting the Docker service
+  service:
+    name: docker
+    enabled: yes
+    state: started
+
+
     
