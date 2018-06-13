@@ -61,7 +61,7 @@
 #    state: started
 #  become: false
   
-- name: Install Docker
+- name: Installing Docker
   yum:
     name: docker-{{ docker_version }}
     state: present
