@@ -1,0 +1,61 @@
+---
+- name: Register system with Red Hat using organization name and activation key
+  when:
+    - ansible_distribution == 'RedHat'
+    - redhat_activationkey is defined
+    - redhat_organization_id is defined
+  redhat_subscription:
+    state: present
+    activationkey: "{{ redhat_activationkey }}"
+    org_id: "{{ redhat_organization_id }}"
+  register: register_system
+  
+- name: subscription manager refresh
+  when:
+    - ansible_distribution == 'RedHat'
+    - register_system|changed
+  shell: subscription-manager refresh
+  
+- name: Disable All Repos
+  when:
+    - ansible_distribution == 'RedHat'
+    - register_system|changed
+  shell: subscription-manager repos --disable="*"
+
+- name: Disable Config Manager
+  when:
+    - ansible_distribution == 'RedHat' 
+    - register_system|changed 
+  shell: yum-config-manager --disable \*
+ 
+- name: Enable required repositories
+  command: subscription-manager repos --enable="{{ item }}"
+  with_items: "{{ repos_to_enable }}"
+
+- name: Install RHEl7 Base Package
+  yum: 
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ rhel_install }}" 
+
+- name: Update System
+  yum:
+    name: '*'
+    state: latest
+
+- name: Reboot system
+  shell: sleep 10 && /sbin/shutdown -r now
+    async: 300
+    poll: 0
+    become: true
+
+- name: waiting for server booting up
+  local_action: wait_for
+  args:
+    host: ''
+    port: 22
+    delay: 30
+    timeout: 600
+    state: started
+  become: false
+    
