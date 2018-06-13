@@ -45,9 +45,9 @@
 
 - name: Reboot system
   shell: sleep 10 && /sbin/shutdown -r now
-    async: 300
-    poll: 0
-    become: true
+  async: 300
+  poll: 0
+  become: true
 
 - name: waiting for server booting up
   local_action: wait_for
