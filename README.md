@@ -4,7 +4,7 @@
 
 Subscribe a system to Red Hat, directly 
 
-_Note: Still work in progress_
+
 
 ## Behaviour:
 
