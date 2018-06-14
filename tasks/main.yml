@@ -1,4 +1,10 @@
 ---
+- name: Change Hostname of Rhel System
+  when:
+    - ansible_host == "{{ item }}"
+  shell: sudo hostnamectl set-hostname --static "{{ item }}"
+  with_items: "{{ rhel_system_name }}"
+  
 - name: Register system with Red Hat using organization name and activation key
   when:
     - ansible_distribution == 'RedHat'
