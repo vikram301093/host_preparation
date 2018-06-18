@@ -3,4 +3,4 @@
 docker_version: 1.13.1
 
 rhel_system_name:
-    - 
+    - bastion1.amosdemo.io
