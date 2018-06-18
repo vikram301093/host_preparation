@@ -12,6 +12,7 @@ Subscribe a system to Red Hat, directly
 - **Given** a VM of capable size and power is available
 - **Given** the connection details to the VM are known
 - **When** A new RHEL-system has been installed
+- **Then** Change the RHEL-system hostname according to private dns
 - **Then** register it to Red Hat
 - **Then** attach subscriptions
 - **Then** disable all other repositories
